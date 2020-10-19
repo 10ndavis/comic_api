@@ -5,7 +5,7 @@ const cors = require("cors");
 
 const app = express();
 const port = process.env.PORT || 4000;
-const address = process.env.PORT ? 'https://node-comic-server.herokuapp.com/' : 'http://localhost';
+const address = process.env.PORT ? 'https://node-comic-server.herokuapp.com' : 'http://localhost';
 
 app.use(cors());
 app.get("/", (req, res) => {
