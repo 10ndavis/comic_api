@@ -4,6 +4,8 @@ const fetch = require("node-fetch");
 const cors = require("cors");
 
 const app = express();
+const port = 4000;
+
 app.use(cors());
 app.get("/", (req, res) => {
   res.send("API WORK !");
@@ -23,7 +25,7 @@ app.get("/search/:title", async (req, res) => {
 
   for (let i = 0; i < body.suggestions.length; i++) {
     const title = body.suggestions[i]["value"];
-    const url = `http://localhost:4000/comic/${body.suggestions[i]["data"]}`;
+    const url = `http://localhost:${port}/comic/${body.suggestions[i]["data"]}`;
     const data = body.suggestions[i]["data"];
     const result = {
       title,
@@ -105,7 +107,7 @@ app.get("/comic/:title", async (req, res) => {
       .find("div:nth-child(2) > div:nth-child(1)")
       .text()
       .trim();
-    const url = `http://localhost:4000/comic/${
+    const url = `http://localhost:${port}/comic/${
       req.params.title
     }/${urlRaw.substr(urlRaw.lastIndexOf("/") + 1)}`;
     const chapter = {
@@ -187,6 +189,6 @@ app.get("/hot", async (req, res) => {
   res.send(comics);
 });
 
-app.listen("4000", () => {
-  console.log("Server is running ...");
+app.listen(port, () => {
+  console.log(`Server is running on port: ${port}...`);
 });
