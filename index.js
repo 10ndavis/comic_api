@@ -5,11 +5,13 @@ const cors = require("cors");
 
 const app = express();
 const port = process.env.PORT || 4000;
+const address = process.env.PORT ? 'https://node-comic-server.herokuapp.com/' : 'http://localhost';
 
 app.use(cors());
 app.get("/", (req, res) => {
   res.send("API WORK !");
 });
+
 
 app.get("/search/:title", async (req, res) => {
   const title = req.params.title;
@@ -25,7 +27,7 @@ app.get("/search/:title", async (req, res) => {
 
   for (let i = 0; i < body.suggestions.length; i++) {
     const title = body.suggestions[i]["value"];
-    const url = `http://localhost:${port}/comic/${body.suggestions[i]["data"]}`;
+    const url = `${address}:${port}/comic/${body.suggestions[i]["data"]}`;
     const data = body.suggestions[i]["data"];
     const result = {
       title,
@@ -107,7 +109,7 @@ app.get("/comic/:title", async (req, res) => {
       .find("div:nth-child(2) > div:nth-child(1)")
       .text()
       .trim();
-    const url = `http://localhost:${port}/comic/${
+    const url = `${address}:${port}/comic/${
       req.params.title
     }/${urlRaw.substr(urlRaw.lastIndexOf("/") + 1)}`;
     const chapter = {
