@@ -5,7 +5,7 @@ const cors = require("cors");
 
 const app = express();
 const port = process.env.PORT || 4000;
-const address = process.env.PORT ? 'https://node-comic-server.herokuapp.com' : 'http://localhost';
+const address = process.env.PORT ? 'https://node-comic-server.herokuapp.com' : `http://localhost:${port}`;
 
 app.use(cors());
 app.get("/", (req, res) => {
@@ -27,7 +27,7 @@ app.get("/search/:title", async (req, res) => {
 
   for (let i = 0; i < body.suggestions.length; i++) {
     const title = body.suggestions[i]["value"];
-    const url = `${address}:${port}/comic/${body.suggestions[i]["data"]}`;
+    let url = `${address}/comic/${body.suggestions[i]["data"]}`;
     const data = body.suggestions[i]["data"];
     const result = {
       title,
@@ -109,9 +109,9 @@ app.get("/comic/:title", async (req, res) => {
       .find("div:nth-child(2) > div:nth-child(1)")
       .text()
       .trim();
-    const url = `${address}:${port}/comic/${
-      req.params.title
-    }/${urlRaw.substr(urlRaw.lastIndexOf("/") + 1)}`;
+
+    let url = `${address}/comic/${req.params.title}/${urlRaw.substr(urlRaw.lastIndexOf("/") + 1)}`;
+
     const chapter = {
       title,
       urlRaw,
@@ -162,34 +162,34 @@ app.get("/comic/:title/:chapter", async (req, res) => {
   res.send(pages);
 });
 
-app.get("/hot", async (req, res) => {
-  const url = `https://readcomicsonline.ru/`;
-  const response = await fetch(url);
-
-  if (response.status == 500) {
-    return res.status(404).send("Chapter Not Found");
-  }
-
-  const body = await response.text();
-  const $ = cheerio.load(body);
-  const comics = [];
-  $("#schedule li").each((i, element) => {
-    const item = $(element);
-    const title = item
-      .find(".schedule-name")
-      .text()
-      .trim();
-    const urlRaw = item.find(".schedule-name a").attr("href");
-    const comic = {
-      title,
-      urlRaw,
-      url: `${apiEndpoint}/comic/${urlRaw.substr(urlRaw.lastIndexOf("/") + 1)}`
-    };
-    comics.push(comic);
-  });
-
-  res.send(comics);
-});
+// app.get("/hot", async (req, res) => {
+//   const url = `https://readcomicsonline.ru/`;
+//   const response = await fetch(url);
+//
+//   if (response.status == 500) {
+//     return res.status(404).send("Chapter Not Found");
+//   }
+//
+//   const body = await response.text();
+//   const $ = cheerio.load(body);
+//   const comics = [];
+//   $("#schedule li").each((i, element) => {
+//     const item = $(element);
+//     const title = item
+//       .find(".schedule-name")
+//       .text()
+//       .trim();
+//     const urlRaw = item.find(".schedule-name a").attr("href");
+//     const comic = {
+//       title,
+//       urlRaw,
+//       url: `${apiEndpoint}/comic/${urlRaw.substr(urlRaw.lastIndexOf("/") + 1)}`
+//     };
+//     comics.push(comic);
+//   });
+//
+//   res.send(comics);
+// });
 
 app.listen(port, () => {
   console.log(`Server is running on port: ${port}...`);
